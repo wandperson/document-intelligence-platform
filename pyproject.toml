@@ -5,3 +5,18 @@ description = "Intelligent document processing platform for OCR, translation, an
 readme = "README.md"
 requires-python = "==3.13.12"
 dependencies = []
+
+[dependency-groups]
+# Local Development
+dev = [
+    { include-group = "linting" },
+    { include-group = "type_checking" },
+    # CI tools
+    "pre-commit>=4.6.0",
+]
+linting = [
+    "ruff>=0.15.15",
+]
+type-checking = [
+    "mypy>=2.1.0",
+]
