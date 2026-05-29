@@ -4,7 +4,18 @@ version = "0.1.0"
 description = "Intelligent document processing platform for OCR, translation, and document management"
 readme = "README.md"
 requires-python = "==3.13.12"
-dependencies = []
+dependencies = [
+    # Web Framework & Server
+    "uvicorn[standard]>=0.48.0",
+    "fastapi>=0.136.3",
+    "httpx>=0.28.1",
+    # Configuration & Environment
+    "python-dotenv>=1.2.2",
+    "pydantic-settings>=2.14.1",
+    # Request Parsing
+    "python-multipart>=0.0.29",  # Handling file uploads and form-data
+    "filetype>=1.2.0",  # Used to detect file types and MIME formats
+]
 
 [dependency-groups]
 # Local Development
