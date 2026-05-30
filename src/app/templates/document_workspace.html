@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-6 space-y-4">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-start">
+        <div>
+            <h1 class="text-xl font-bold">{{ document.name }}</h1>
+            <p class="text-sm text-gray-500">ID: {{ document.document_id }}</p>
+        </div>
+
+        <a href="/documents"
+           class="text-sm text-blue-600 hover:underline">
+            Back
+        </a>
+    </div>
+
+    <!-- ACTION BAR -->
+    <div class="flex flex-wrap gap-2">
+
+        <!-- OCR action -->
+        <button
+            hx-post="/api/documents/{{ document.document_id }}/ocr"
+            hx-target="#text-block"
+            hx-swap="outerHTML"
+            class="px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600">
+            Зчитати текст
+        </button>
+
+        <!-- Save -->
+        <button
+            hx-post="/documents/{{ document.document_id }}/save"
+            hx-include="#text-block"
+            class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+            Зберегти
+        </button>
+
+        <!-- Copy -->
+        <button
+            onclick="navigator.clipboard.writeText(document.querySelector('#text-area').value)"
+            class="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-800">
+            Копіювати
+        </button>
+
+    </div>
+
+    <!-- TEXT BLOCK -->
+    <div id="text-block" class="border rounded bg-white shadow">
+
+        <textarea
+            id="text-area"
+            name="text"
+            class="w-full h-[500px] p-4 outline-none resize-none"
+        >{{ document.text }}</textarea>
+
+    </div>
+
+    <p class="text-sm text-gray-500">Base64: {{ document.base64 }}</p>
+
+</div>
+{% endblock %}

@@ -13,6 +13,7 @@ import filetype  # type: ignore
 # Custom
 from app.schemas import SuccessResponse
 from app.dependencies import RepositoryDep
+from app.database import ProcessStage, ProcessStatus
 from app.infrastructure import get_text_from_image
 
 
@@ -33,7 +34,6 @@ ALLOWED_TYPES = {
 async def upload_document(
     repository: RepositoryDep,
     files: list[UploadFile] = File(...),
-    analyze: bool = False,
 ):
     # `content_type` in `file` can be spoofed,
     # so it's better to check the content
@@ -50,17 +50,44 @@ async def upload_document(
     await file.seek(0)
 
     if file.filename:
-        repository.save_document(file.filename.split(".")[0], kind.mime)
-
-    if analyze:
         file_bytes = await file.read()
         b64_file = base64.b64encode(file_bytes).decode("utf-8")
-        text = await get_text_from_image(b64_file)
-        print(text)
-    else:
+        repository.save_document(file.filename.split(".")[0], kind.mime, b64_file)
+
         import time
 
         # Simulate downloading a large file
         time.sleep(1.5)
 
     return SuccessResponse(message="Document uploaded successfully")
+
+
+@router.post("/{document_id}/ocr")
+async def ocr_document(
+    repository: RepositoryDep,
+    document_id: str,
+):
+    document = repository.get_document(document_id)
+
+    repository.create_event(
+        document_id,
+        ProcessStage.text_extracted,
+        ProcessStatus.in_progress,
+    )
+
+    text = await get_text_from_image(document["base64"])
+
+    repository.update_document_text(document_id, text)
+    repository.create_event(
+        document_id,
+        ProcessStage.text_extracted,
+        ProcessStatus.done,
+    )
+
+    repository.create_event(
+        document_id,
+        ProcessStage.approved_extraction,
+        ProcessStatus.pending,
+    )
+
+    return SuccessResponse(message="Extracted text successfully")

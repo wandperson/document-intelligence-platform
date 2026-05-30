@@ -25,14 +25,15 @@ class InMemoryRepo:
         self.documents = []
         self.document_events = []
 
-    def save_document(self, filename, type):
+    def save_document(self, filename, type, base64: str):
         doc_uuid = str(uuid.uuid4().hex)
         document = {
             "document_id": doc_uuid,
             "name": filename,
             "type": type,
+            "base64": base64,
             "created_at": dt.datetime.now(),
-            "content": None,
+            "text": "",
         }
         self.documents.append(document)
         event = {
@@ -43,6 +44,11 @@ class InMemoryRepo:
         }
         self.document_events.append(event)
         return document
+
+    def update_document_text(self, document_id, text):
+        for d in self.documents:
+            if d["document_id"] == document_id:
+                d["text"] = text
 
     def create_event(self, document_id, stage, status):
         event = {
@@ -60,6 +66,9 @@ class InMemoryRepo:
     def get_document_events(self, document_id: str):
         return [e for e in self.document_events if e["document_id"] == document_id]
 
+    def get_document(self, document_id: str):
+        return [d for d in self.documents if d["document_id"] == document_id][0]
+
 
 def seed_db(db: InMemoryRepo):
     doc_uuid = str(uuid.uuid4().hex)
@@ -68,8 +77,9 @@ def seed_db(db: InMemoryRepo):
             "document_id": doc_uuid,
             "name": "first_document",
             "type": "image/jpeg",
+            "base64": "fake_base64",
             "created_at": dt.datetime.now() - dt.timedelta(hours=1, minutes=14),
-            "content": None,
+            "text": "",
         }
     )
 
@@ -81,8 +91,9 @@ def seed_db(db: InMemoryRepo):
             "document_id": doc_uuid,
             "name": "some_new_doc",
             "type": "image/jpeg",
+            "base64": "fake_base64",
             "created_at": dt.datetime.now() - dt.timedelta(minutes=37),
-            "content": "10 lines of text an \n and another line \n and yet another line",
+            "text": "10 lines of text an \n and another line \n and yet another line",
         }
     )
     db.create_event(doc_uuid, ProcessStage.uploaded, ProcessStatus.done)
