@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/response-targets.js"></script>
+
+<h1 class="text-xl font-bold mb-4">Documents</h1>
+
+<div class="space-y-4" hx-ext="response-targets"> <form
+    id="upload-form"
+    hx-post="/api/documents/upload"
+    hx-target="#upload-result"
+    hx-target-error="#error-box"
+    hx-swap="innerHTML"
+    hx-encoding="multipart/form-data"
+    hx-indicator="#upload-form"
+    hx-on::before-request="document.getElementById('error-box').innerHTML = ''"
+    class="space-y-2">
+
+    <input
+      type="file"
+      name="files"
+      class="block w-full border p-2 rounded"
+      multiple
+      required>
+
+    <button
+      id="upload-btn"
+      type="submit"
+      class="
+        px-4 py-2
+        bg-blue-600 text-white rounded
+        hover:bg-blue-700
+        htmx-indicator-invisible
+      ">
+      Upload
+    </button>
+
+    <div id="loading" class="htmx-indicator text-blue-600 flex items-center gap-2 mt-2">
+      <div class="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+      Uploading...
+    </div>
+
+  </form>
+
+  <div id="error-box" class="error-zone mt-3 p-3 bg-red-100 text-red-700 rounded"></div>
+
+  <div class="mt-4">
+    <h2 class="font-semibold mb-2">Extracted text:</h2>
+    <pre
+      id="upload-result"
+      class="p-3 bg-gray-100 rounded whitespace-pre-wrap text-sm text-gray-800">
+    </pre>
+  </div>
+
+</div>
+
+<style>
+  /* Ховаємо лоадер за замовчуванням */
+  #upload-form .htmx-indicator {
+    display: none !important;
+  }
+  /* Показуємо лоадер під час запиту */
+  #upload-form.htmx-request .htmx-indicator {
+    display: flex !important;
+  }
+  
+  /* Кнопка видима за замовчуванням */
+  #upload-form .htmx-indicator-invisible {
+    display: block !important;
+  }
+  /* Кнопка зникає під час запиту */
+  #upload-form.htmx-request .htmx-indicator-invisible {
+    display: none !important;
+  }
+
+  /* Помилка */
+  .error-zone:empty {
+    display: none !important;
+  }
+  .error-zone:not(:empty) {
+    display: block !important;
+  }
+</style>
+
+{% endblock %}

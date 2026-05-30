@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document Intelligence Platform</title>
+</head>
+<body class="h-screen flex bg-gray-100">
+
+    <!-- SIDEBAR -->
+  {% from "navigation.html" import nav_link %}
+  <aside class="w-64 bg-gray-900 text-white p-4 space-y-2">
+  {{ nav_link('/', 'Home', request.url.path) }}
+  {{ nav_link('/documents', 'Documents', request.url.path) }}
+  </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="content" class="flex-1 p-6">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

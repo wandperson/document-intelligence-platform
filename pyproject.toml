@@ -15,6 +15,8 @@ dependencies = [
     # Request Parsing
     "python-multipart>=0.0.29",  # Handling file uploads and form-data
     "filetype>=1.2.0",  # Used to detect file types and MIME formats
+    # Frontend
+    "jinja2>=3.1.6",
 ]
 
 [dependency-groups]
