@@ -55,8 +55,12 @@
 
 
 <!-- DOCUMENTS TABLE -->
-<div id="document-table">
-    {% include "partial/document_table.html" %}
+<div
+    id="document-table"
+    hx-get="/ui/documents/table"
+    hx-trigger="load"
+    hx-swap="innerHTML"
+>
 </div>
 
 <style>

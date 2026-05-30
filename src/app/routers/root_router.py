@@ -3,7 +3,6 @@ from fastapi import APIRouter, Request
 
 # Custom
 from app.core.templates import templates
-from app.dependencies import RepositoryDep
 
 
 router = APIRouter()
@@ -18,11 +17,8 @@ def root(request: Request):
 
 
 @router.get("/documents")
-def upload(request: Request, repository: RepositoryDep):
-    documents = repository.get_documents()
-
+def upload(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="documents.html",
-        context={"documents": documents},
     )
