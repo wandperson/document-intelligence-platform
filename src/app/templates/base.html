@@ -2,24 +2,37 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>Document Intelligence Platform</title>
+
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Document Intelligence Platform</title>
+
+    <!-- HTMX extensions (useful for history + forms) -->
+    <script>
+      document.addEventListener("htmx:configRequest", function(evt) {
+        evt.detail.headers["X-Requested-With"] = "HTMX";
+      });
+    </script>
 </head>
+
 <body class="h-screen flex bg-gray-100">
-
     <!-- SIDEBAR -->
-  {% from "navigation.html" import nav_link %}
-  <aside class="w-64 bg-gray-900 text-white p-4 space-y-2">
-  {{ nav_link('/', 'Home', request.url.path) }}
-  {{ nav_link('/documents', 'Documents', request.url.path) }}
-  </aside>
+    <aside class="w-64 bg-gray-900 text-white p-4 space-y-2">
+        {% from "navigation.html" import nav_link %}
 
-    <!-- MAIN CONTENT -->
-    <main id="content" class="flex-1 p-6">
-        {% block content %}
-        {% endblock %}
+        {{ nav_link('/', 'Home', request.url.path) }}
+        {{ nav_link('/documents', 'Documents', request.url.path) }}
+    </aside>
+
+    <!-- MAIN CONTENT (HTMX TARGET) -->
+    <main
+        id="content"
+        class="flex-1 p-6 overflow-auto"
+    >
+
+        {% block content %}{% endblock %}
     </main>
-
 </body>
 </html>

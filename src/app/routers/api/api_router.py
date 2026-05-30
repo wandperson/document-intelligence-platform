@@ -11,6 +11,8 @@ from fastapi import (
 import filetype  # type: ignore
 
 # Custom
+from app.schemas import SuccessResponse
+from app.dependencies import RepositoryDep
 from app.infrastructure import get_text_from_image
 
 
@@ -28,7 +30,11 @@ ALLOWED_TYPES = {
 
 
 @router.post("/upload")
-async def upload_document(files: list[UploadFile] = File(...), analyze: bool = False):
+async def upload_document(
+    repository: RepositoryDep,
+    files: list[UploadFile] = File(...),
+    analyze: bool = False,
+):
     # `content_type` in `file` can be spoofed,
     # so it's better to check the content
     # as reading first bytes from the file
@@ -43,21 +49,18 @@ async def upload_document(files: list[UploadFile] = File(...), analyze: bool = F
     # Reset the cursor
     await file.seek(0)
 
-    text = None
+    if file.filename:
+        repository.save_document(file.filename.split(".")[0], kind.mime)
 
     if analyze:
         file_bytes = await file.read()
         b64_file = base64.b64encode(file_bytes).decode("utf-8")
         text = await get_text_from_image(b64_file)
+        print(text)
     else:
         import time
 
         # Simulate downloading a large file
-        time.sleep(3)
+        time.sleep(1.5)
 
-    return {
-        "filename": file.filename,
-        "type": kind.mime,
-        "extension": kind.extension,
-        "text": text,
-    }
+    return SuccessResponse(message="Document uploaded successfully")

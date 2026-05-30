@@ -6,23 +6,18 @@ from app.core.templates import templates
 from app.dependencies import RepositoryDep
 
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/ui/documents",
+    tags=["documents"],
+)
 
 
-@router.get("/")
-def root(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="home.html",
-    )
-
-
-@router.get("/documents")
-def upload(request: Request, repository: RepositoryDep):
+@router.get("/table")
+async def documents_table(request: Request, repository: RepositoryDep):
     documents = repository.get_documents()
 
     return templates.TemplateResponse(
         request=request,
-        name="documents.html",
+        name="partial/document_table.html",
         context={"documents": documents},
     )
