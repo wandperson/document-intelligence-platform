@@ -48,15 +48,15 @@
     <!-- TEXT BLOCK -->
     <div id="text-block" class="border rounded bg-white shadow">
 
-        <textarea
-            id="text-area"
-            name="text"
-            class="w-full h-[500px] p-4 outline-none resize-none"
-        >{{ document.text }}</textarea>
+    <textarea
+        id="text-area"
+        name="text"
+        class="w-full h-[500px] p-4 outline-none resize-none
+            {% if not document.text %}text-gray-400{% endif %}"
+        placeholder="Run OCR to generate text..."
+    >{{ document.text }}</textarea>
 
     </div>
-
-    <p class="text-sm text-gray-500">Base64: {{ document.base64 }}</p>
 
 </div>
 {% endblock %}

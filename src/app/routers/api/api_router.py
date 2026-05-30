@@ -6,6 +6,7 @@ from fastapi import (
     APIRouter,
     HTTPException,
     UploadFile,
+    Form,
     File,
 )
 import filetype  # type: ignore
@@ -34,6 +35,7 @@ ALLOWED_TYPES = {
 async def upload_document(
     repository: RepositoryDep,
     files: list[UploadFile] = File(...),
+    document_name: str = Form(...),
 ):
     # `content_type` in `file` can be spoofed,
     # so it's better to check the content
@@ -49,15 +51,14 @@ async def upload_document(
     # Reset the cursor
     await file.seek(0)
 
-    if file.filename:
-        file_bytes = await file.read()
-        b64_file = base64.b64encode(file_bytes).decode("utf-8")
-        repository.save_document(file.filename.split(".")[0], kind.mime, b64_file)
+    file_bytes = await file.read()
+    b64_file = base64.b64encode(file_bytes).decode("utf-8")
+    repository.save_document(document_name, kind.mime, b64_file)
 
-        import time
+    import time
 
-        # Simulate downloading a large file
-        time.sleep(1.5)
+    # Simulate downloading a large file
+    time.sleep(1.5)
 
     return SuccessResponse(message="Document uploaded successfully")
 
