@@ -1,0 +1,28 @@
+services:
+  # Install first Nvidia Container Toolkit
+  # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+  # Start container from https://docs.ollama.com/docker
+  # docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+  ollama:
+    container_name: ollama
+    image: ollama/ollama
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+
+    # --- GPU can be enabled in two ways: ---
+    # Modern Docker Compose approach using NVIDIA Container Toolkit
+    # Recommended option for single-host setups
+    gpus: all
+    # Older Swarm-oriented method that may be ignored outside Swarm mode
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all 
+    #           capabilities: [gpu]
+
+volumes:
+  ollama:

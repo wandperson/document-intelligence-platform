@@ -1,0 +1,13 @@
+{% macro nav_link(href, text, current_path) %}
+<a
+    href="{{ href }}"
+    class="block px-3 py-2 rounded transition-colors
+        {% if current_path == href or current_path.startswith(href + '/') %}
+            bg-gray-700 text-white
+        {% else %}
+            text-gray-300 hover:bg-gray-700 hover:text-white
+        {% endif %}
+    ">
+    {{ text }}
+</a>
+{% endmacro %}

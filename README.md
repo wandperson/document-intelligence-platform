@@ -5,12 +5,17 @@
 This project is a document processing system designed to handle scanned documents and images, extract text, translate it between languages, and generate structured output documents.
 
 It is focused on building a full document processing pipeline, including:
-
 - OCR extraction from images and PDFs
 - Multilingual translation (English, Ukrainian, Japanese)
 - Terminology management via reusable dictionary
 - Template reuse for previously processed documents
 - Document generation in DOCX / PDF formats
+
+
+## Architecture
+
+See detailed architecture documentation:
+- [Architecture Documentation](docs/ARCHITECTURE.md)
 
 
 ## Key Features (MVP scope)
@@ -30,9 +35,9 @@ It is focused on building a full document processing pipeline, including:
   - proper names (transliteration)
   - unknown terms fallback
 
- #### Knowledge management
-  - Terminology dictionary for repeated terms
-  - Template reuse for similar documents to reduce processing time
+#### Knowledge management
+- Terminology dictionary for repeated terms
+- Template reuse for similar documents to reduce processing time
 
 #### Output generation
 - Export to DOCX or PDF
