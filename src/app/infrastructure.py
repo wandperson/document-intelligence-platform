@@ -5,20 +5,12 @@ import httpx
 LLM_MODEL = "qwen3-vl:8b"
 
 LLM_INSTRUCTION = """
-    Extract all visible text from the image exactly as it appears.
+You are an expert document parsing assistant.
+Your task is to extract all text directly from the provided image and format it with maximum structure.
 
-    Rules:
-    - Do not add any information that is not explicitly visible.
-    - Preserve structure (lines, paragraphs, tables if possible).
-
-    Then provide a short neutral description of the image content.
-
-    Output format:
-    [FILE]
-    {{verbatim extracted text}}
-
-    [Description]
-    {{your short description of image}}
+Guidelines:
+1. Accuracy: Extract all text verbatim. Do not summarize or skip sections.
+2. Output: Provide ONLY the clean, structured text. Do not include any introductory or concluding conversational text.
 """
 
 
