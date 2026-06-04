@@ -33,3 +33,16 @@ linting = [
 type-checking = [
     "mypy>=2.1.0",
 ]
+
+# ============================================================
+# TOOL CONFIGURATIONS (BUILD, LINTERS, CHECKERS)
+# ============================================================
+[tool.setuptools]
+# Which packages need to be installed
+packages = ["app"]
+# Where each of them is physically located
+package-dir = {"app" = "src/app"}
+
+[tool.mypy]
+# type checking fix for pydantic_settings initialization
+plugins = ["pydantic.mypy"]
