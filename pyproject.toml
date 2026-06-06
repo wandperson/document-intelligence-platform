@@ -17,6 +17,9 @@ dependencies = [
     "filetype>=1.2.0",  # Used to detect file types and MIME formats
     # Frontend
     "jinja2>=3.1.6",
+    # Database
+    "sqlalchemy>=2.0.50",
+    "asyncpg>=0.31.0",
 ]
 
 [dependency-groups]
@@ -33,16 +36,25 @@ linting = [
 type-checking = [
     "mypy>=2.1.0",
 ]
+utils = [
+    "typer>=0.26.7",
+]
 
 # ============================================================
 # TOOL CONFIGURATIONS (BUILD, LINTERS, CHECKERS)
 # ============================================================
 [tool.setuptools]
 # Which packages need to be installed
-packages = ["app"]
+packages = ["app", "scripts"]
 # Where each of them is physically located
-package-dir = {"app" = "src/app"}
+package-dir = {"app" = "src/app", "scripts" = "scripts"}
 
 [tool.mypy]
 # type checking fix for pydantic_settings initialization
 plugins = ["pydantic.mypy"]
+
+# ============================================================
+# CLI ENTRY POINTS
+# ============================================================
+[project.scripts]
+db-init = "scripts.db_init:cli"

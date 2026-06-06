@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 # Custom modules
 from app.core.config import MAIN_DIR
-from app.database import InMemoryRepo, seed_db
+from app.database import InMemoryRepo
 from app.routers.api import api_router
 from app.routers import root_router
 from app.routers.ui import documents_ui_router
@@ -16,7 +16,6 @@ from app.routers.ui import documents_ui_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     database = InMemoryRepo()
-    seed_db(database)
 
     app.state.database = database
 
