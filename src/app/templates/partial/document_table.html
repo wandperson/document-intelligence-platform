@@ -3,8 +3,10 @@
         <tr class="text-left border-b bg-amber-50/40 text-amber-900/80">
             <th class="p-2"></th>
             <th class="p-2">Name</th>
-            <th class="p-2">Id</th>
+            <th class="p-2">Pages</th>
+            <th class="p-2">Normalize</th>
             <th class="p-2">Process</th>
+            <th class="p-2">Dossier</th>
             <th class="p-2">Created At</th>
         </tr>
     </thead>
@@ -13,13 +15,26 @@
         {% for document in documents %}
         <tr class="border-b group hover:bg-gray-50">
         <td class="p-2">
-            <a href="/documents/{{ document.document_id }}"
-            class="px-2 py-1 text-sm rounded border border-gray-200 bg-amber-50/40 text-amber-900/80 hover:bg-amber-50 transition">
+            <a
+                href="/documents/{{ document.document_id }}"
+                class="px-2 py-1 text-sm rounded border border-gray-200 bg-amber-50/40 text-amber-900/80 hover:bg-amber-50 transition"
+            >
                 View
             </a>
         </td>
-            <td class="p-2">{{ document.name }}</td>
-            <td class="p-2">{{ document.document_id }}</td>
+            <td class="p-2">{{ document.document_name }}</td>
+            <td class="p-2">{{ document.pages }}</td>
+            <td class="p-2">
+                <button
+                    hx-post="/api/documents/{{ document.document_id }}/normalize"
+                    hx-swap="none"
+                    hx-on:htmx:before-request="this.disabled = true; this.innerText = 'Running...';"
+                    hx-on:htmx:after-request="this.innerText = 'Done';"
+                    class="px-2 py-1 text-sm rounded border border-gray-200 bg-amber-50/40 text-amber-900/80 hover:bg-amber-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Run
+                </button>
+            </td>
             <td class="p-2">
                 <div class="flex gap-1">
                     {% for stage in document.stage_chain %}
@@ -32,6 +47,7 @@
                     {% endfor %}
                 </div>
             </td>
+            <td class="p-2"><span class="text-gray-300">(not implemented)</span></td>
             <td class="p-2">{{ document.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
         </tr>
         {% endfor %}

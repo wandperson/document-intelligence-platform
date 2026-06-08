@@ -1,6 +1,8 @@
 # Backend
 import httpx
 
+# Custom
+from app.core.config import get_settings
 
 LLM_MODEL = "qwen3-vl:8b"
 
@@ -26,7 +28,7 @@ async def get_text_from_image(b64_image: str | list[str]) -> str:
             response = await client.post(
                 # Ollama API endpoints docs
                 # https://docs.ollama.com/api/generate
-                "http://localhost:11434/api/generate",
+                f"{get_settings().ollama_url}/api/generate",
                 json={
                     "model": LLM_MODEL,
                     "prompt": LLM_INSTRUCTION,

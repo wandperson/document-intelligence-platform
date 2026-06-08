@@ -3,11 +3,12 @@ from pathlib import Path
 from functools import lru_cache
 
 # Backend
-from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 MAIN_DIR = Path(__file__).resolve().parents[1]
+UPLOAD_DIR = Path(__file__).resolve().parents[2] / "dip_data"
+UPLOAD_DIR.mkdir(exist_ok=True)
 
 
 class Settings(BaseSettings):
@@ -18,7 +19,7 @@ class Settings(BaseSettings):
     postgres_host: str = "database"
     postgres_port: int = 5432
 
-    @computed_field
+    @property
     def postgres_url(self) -> str:
         return (
             f"postgresql+asyncpg://{self.postgres_user}:"
@@ -30,7 +31,7 @@ class Settings(BaseSettings):
     ollama_host: str = "ollama"
     ollama_port: int = 11434
 
-    @computed_field
+    @property
     def ollama_url(self) -> str:
         return f"http://{self.ollama_host}:{self.ollama_port}"
 

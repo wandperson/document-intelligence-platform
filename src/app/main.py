@@ -6,20 +6,25 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 # Custom modules
-from app.core.config import MAIN_DIR
-from app.database import InMemoryRepo
-from app.routers.api import api_router
-from app.routers import root_router
-from app.routers.ui import documents_ui_router
+from app.core.config import MAIN_DIR, get_settings
+from app.database import create_engine, create_session_maker
+
+from app.routers.api import document_api_router
+from app.routers import app_router
+from app.routers.ui import document_ui_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    database = InMemoryRepo()
+    engine = create_engine(get_settings().postgres_url)
+    session_maker = create_session_maker(engine)
 
-    app.state.database = database
+    app.state.engine = engine
+    app.state.session_maker = session_maker
 
     yield
+
+    await engine.dispose()
 
 
 app = FastAPI(lifespan=lifespan)
@@ -27,6 +32,6 @@ app = FastAPI(lifespan=lifespan)
 
 app.mount("/static", StaticFiles(directory=MAIN_DIR / "static"))
 
-app.include_router(api_router.router)
-app.include_router(root_router.router)
-app.include_router(documents_ui_router.router)
+app.include_router(document_api_router.router)
+app.include_router(app_router.router)
+app.include_router(document_ui_router.router)

@@ -21,7 +21,7 @@ from .base_model import Base
 
 
 class ProcessStage(StrEnum):
-    UPLOADED = "uploaded"
+    NORMALIZED = "normalized"
     TEXT_EXTRACTED = "text_extracted"
     APPROVED_EXTRACTION = "approved_extraction"
     TEXT_TRANSLATED = "text_translated"
@@ -66,15 +66,18 @@ class DocumentEvent(Base):
 class PageEvent(Base):
     __tablename__ = "page_events"
 
+    page_event_id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
     page_id: Mapped[UUID] = mapped_column(
         Integer,
         ForeignKey("pages.page_id", ondelete="CASCADE"),
-        primary_key=True,
         nullable=False,
     )
     stage: Mapped[ProcessStage] = mapped_column(
         SQLEnum(ProcessStage, native_enum=False),
-        primary_key=True,
         nullable=False,
     )
     status: Mapped[ProcessStatus] = mapped_column(

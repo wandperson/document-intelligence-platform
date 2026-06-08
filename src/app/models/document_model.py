@@ -51,7 +51,7 @@ class DocumentAsset(Base):
         ForeignKey("documents.document_id", ondelete="CASCADE"),
         nullable=False,
     )
-    source_type: Mapped[str] = mapped_column(
+    content_type: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
     )
