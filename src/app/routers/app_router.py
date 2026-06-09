@@ -3,7 +3,8 @@ from fastapi import APIRouter, Request
 
 # Custom
 from app.core.templates import templates
-from app.dependencies import RepositoryDep
+from app.dependencies import SessionDep
+from app.database import DatabaseRepository
 
 
 router = APIRouter()
@@ -26,14 +27,20 @@ def get_documents(request: Request):
 
 
 @router.get("/documents/{document_id}")
-def get_document(
+async def get_document(
     request: Request,
     document_id: str,
-    repository: RepositoryDep,
+    session: SessionDep,
 ):
-    document = repository.get_document(document_id)
+    db = DatabaseRepository(session)
+    document = await db.get_document(document_id)
+    pages = await db.get_page_content_by_document(document_id)
+
     return templates.TemplateResponse(
         request=request,
         name="document_workspace.html",
-        context={"document": document},
+        context={
+            "document": document,
+            "pages": pages,
+        },
     )

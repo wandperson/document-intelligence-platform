@@ -18,7 +18,7 @@ See detailed architecture documentation:
 
 ## Key Features Scope
 
-#### Core Document Pipeline (MVP)
+#### Core Document Pipeline
 
 - [x] Upload documents as images
 - [ ] Upload documents as PDF
@@ -59,7 +59,7 @@ See detailed architecture documentation:
 
 #### Infrastructure & System Design
 
-- [ ] Connect database
+- [x] Connect database
 - [ ] Connect message broker and task queue
 - [ ] Docker deployment
 - [ ] GitHub Actions for DockerHub deployment
@@ -68,4 +68,4 @@ See detailed architecture documentation:
 
 ## Status
 
-Early-stage project (MVP design and experimentation phase)
+Functional MVP in active development.

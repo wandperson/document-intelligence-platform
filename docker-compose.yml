@@ -1,21 +1,29 @@
 services:
-  # Install first Nvidia Container Toolkit
+  # GPU support requires NVIDIA Container Toolkit on the host:
   # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
-  # Start container from https://docs.ollama.com/docker
-  # docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
-  ollama:
-    container_name: ollama
+  #
+  # From https://docs.ollama.com/docker
+  # This Compose service is equivalent to:
+  # docker run -d \
+  #   --gpus=all \
+  #   -v ollama:/root/.ollama \
+  #   -p 11434:11434 \
+  #   --name ollama \
+  #   ollama/ollama
+  llm_engine:
     image: ollama/ollama
+    container_name: ollama
     volumes:
-      - ollama:/root/.ollama
+      - type: volume
+        source: ollama
+        target: /root/.ollama
     ports:
       - "11434:11434"
-
     # --- GPU can be enabled in two ways: ---
     # Modern Docker Compose approach using NVIDIA Container Toolkit
     # Recommended option for single-host setups
     gpus: all
-    # Older Swarm-oriented method that may be ignored outside Swarm mode
+    # Older Swarm-oriented method
     # deploy:
     #   resources:
     #     reservations:
@@ -24,5 +32,39 @@ services:
     #           count: all 
     #           capabilities: [gpu]
 
+  database:
+    image: postgres:18.3-alpine3.23
+    container_name: postgres
+    volumes:
+      - postgres:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+  app:
+    image: dip:latest
+    container_name: dip
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ./src/app
+        target: /app
+        read_only: true
+    ports:
+      - "8000:8000"
+    command: >
+      /.venv/bin/uvicorn
+      app.main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+      --reload-dir /app
+
 volumes:
   ollama:
+  postgres:
